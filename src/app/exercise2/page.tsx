@@ -1,0 +1,3 @@
+export default function Exercise2() {
+  return <div>page2</div>;
+}
