@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+"use client";
+
+import { RangeData } from "@/types/rangeData";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 
 type RangeProps = {
-  min?: number;
-  max?: number;
-  onChange?: (values: { min: number; max: number }) => void;
+  data: RangeData;
 };
 
 const RangeWrapper = styled.div`
@@ -74,7 +75,9 @@ const Bullet = styled.div`
   }
 `;
 
-const Range: React.FC<RangeProps> = ({ min = 0, max = 100, onChange }) => {
+const Range: React.FC<RangeProps> = ({ data }) => {
+  const min = data.min;
+  const max = data.max;
   const trackRef = useRef<HTMLDivElement>(null);
   const [minValue, setMinValue] = useState<number>(min);
   const [maxValue, setMaxValue] = useState<number>(max);
@@ -103,11 +106,6 @@ const Range: React.FC<RangeProps> = ({ min = 0, max = 100, onChange }) => {
       setInputMaxValue(newValue.toFixed(2));
     }
   };
-
-  useEffect(() => {
-    onChange?.({ min: minValue, max: maxValue });
-    console.log("Min Value:", minValue, "Max Value:", maxValue);
-  }, [minValue, maxValue, onChange]);
 
   const handleMouseDown = (type: "min" | "max") => {
     const handleMouseMove = (e: MouseEvent) => handleMove(e, type);
