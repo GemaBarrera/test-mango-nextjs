@@ -1,6 +1,6 @@
 import { RangeData } from "@/types/rangeData";
 import { JSX } from "react";
-import Range from "../components/Range/Range";
+import { Range } from "../components/Range";
 
 export default async function Exercise2(): Promise<JSX.Element> {
   const response = await fetch("http://demo2971721.mockable.io/range-values");
