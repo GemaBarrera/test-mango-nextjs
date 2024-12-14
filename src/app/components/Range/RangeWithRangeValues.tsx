@@ -9,6 +9,7 @@ interface RangeWithRangeValues {
 
 const RangeWrapper = styled.div`
   display: flex;
+  width: 600px;
 `;
 
 const RangeContainer = styled.div`

@@ -1,6 +1,7 @@
+import React from "react";
 import { RangeData } from "@/types/rangeData";
 import { JSX } from "react";
-import { Range } from "../components/Range";
+import { Range } from "../../components/Range";
 
 export default async function Exercise1(): Promise<JSX.Element> {
   const response = await fetch(
