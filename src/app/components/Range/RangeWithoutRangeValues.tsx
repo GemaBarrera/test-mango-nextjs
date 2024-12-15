@@ -1,84 +1,20 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import styled from "styled-components";
+import {
+  Badge,
+  Bullet,
+  Highlight,
+  Input,
+  RangeSelector,
+  RangeWrapper,
+  Track,
+} from "./RangeWithoutRangeValues.styles";
 
 interface RangeWithoutRangeValues {
   min: number;
   max: number;
 }
-
-const RangeWrapper = styled.div`
-  display: flex;
-`;
-
-const RangeSelector = styled.div`
-  position: relative;
-  width: 400px;
-  height: 40px;
-  margin: 10px;
-`;
-
-const Track = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-  width: 100%;
-  height: 4px;
-  background-color: black;
-  border-radius: 4px;
-`;
-
-const Highlight = styled.div`
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 4px;
-  background-color: black;
-  border-radius: 4px;
-`;
-
-const Input = styled.input`
-  width: 46px;
-  border: none;
-  text-align: right;
-  font-size: 0.8125rem;
-  letter-spacing: 0.01875rem;
-  overflow: visible;
-  &:focus {
-    outline: none;
-    border-color: transparent;
-  }
-`;
-
-const Badge = styled.span`
-  display: flex;
-  align-items: center;
-  font-weight: 300;
-  font-size: 0.8rem;
-`;
-
-const Bullet = styled.div`
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 15px;
-  height: 15px;
-  background-color: black;
-  border: 2px solid black;
-  border-radius: 50%;
-  cursor: grab;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  &:hover,
-  &:active {
-    width: 20px;
-    height: 20px;
-  }
-  &:active {
-    cursor: grabbing;
-  }
-`;
 
 const RangeWithoutRangeValues: React.FC<RangeWithoutRangeValues> = ({
   min,
