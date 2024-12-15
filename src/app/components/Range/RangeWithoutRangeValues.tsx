@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Badge,
   Bullet,
@@ -25,6 +25,13 @@ const RangeWithoutRangeValues: React.FC<RangeWithoutRangeValues> = ({
   const [maxValue, setMaxValue] = useState<number>(max);
   const [inputMinValue, setInputMinValue] = useState<string>(min.toFixed(2));
   const [inputMaxValue, setInputMaxValue] = useState<string>(max.toFixed(2));
+  const [trackWidth, setTrackWidth] = useState<number>(1);
+
+  useEffect(() => {
+    if (trackRef.current) {
+      setTrackWidth(trackRef.current.offsetWidth);
+    }
+  }, []);
 
   // Update the 'min' and 'max' values based on the position of the mouse during a drag operation.
   const handleMove = (e: MouseEvent, type: "min" | "max") => {
@@ -38,15 +45,23 @@ const RangeWithoutRangeValues: React.FC<RangeWithoutRangeValues> = ({
     );
 
     if (type === "min") {
-      if (newValue < min) return;
-      if (newValue >= maxValue) return;
-      setMinValue(newValue);
-      setInputMinValue(newValue.toFixed(2));
-    } else {
-      if (newValue > max) return;
-      if (newValue <= minValue) return;
-      setMaxValue(newValue);
-      setInputMaxValue(newValue.toFixed(2));
+      const clampedMinValue = Math.max(newValue, min);
+      const clampedMinValueAdjusted = Math.min(clampedMinValue, maxValue);
+
+      if (clampedMinValueAdjusted === minValue) return;
+
+      setMinValue(clampedMinValueAdjusted);
+      setInputMinValue(clampedMinValueAdjusted.toFixed(2));
+    }
+
+    if (type === "max") {
+      const clampedMaxValue = Math.min(newValue, max);
+      const clampedMaxValueAdjusted = Math.max(clampedMaxValue, minValue);
+
+      if (clampedMaxValueAdjusted === maxValue) return;
+
+      setMaxValue(clampedMaxValueAdjusted);
+      setInputMaxValue(clampedMaxValueAdjusted.toFixed(2));
     }
   };
 
@@ -100,7 +115,6 @@ const RangeWithoutRangeValues: React.FC<RangeWithoutRangeValues> = ({
     }
   };
 
-  const trackWidth = trackRef.current?.offsetWidth || 1;
   const minPosition = ((minValue - min) / (max - min)) * trackWidth;
   const maxPosition = ((maxValue - min) / (max - min)) * trackWidth;
 
