@@ -130,7 +130,7 @@ const RangeWithRangeValues: React.FC<RangeWithRangeValues> = ({
   };
 
   return (
-    <RangeWrapper>
+    <RangeWrapper data-testid="range-with-rangevalues">
       <Label style={{ justifyContent: "flex-end", width: "60px" }}>
         {sortedValues[leftIndex]}
       </Label>

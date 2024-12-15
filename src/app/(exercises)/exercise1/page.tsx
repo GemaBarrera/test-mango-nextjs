@@ -1,4 +1,3 @@
-import React from "react";
 import { RangeData } from "@/types/rangeData";
 import { JSX } from "react";
 import { Range } from "../../components/Range";

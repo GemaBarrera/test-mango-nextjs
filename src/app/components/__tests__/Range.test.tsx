@@ -1,11 +1,26 @@
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { Range } from "../Range";
 
-describe("Range component", () => {
-  it("renders correctly", () => {
-    render(<Range data={{ min: 0, max: 100, rangeValues: [] }} />);
+describe("Range", () => {
+  const mockDataWithRangeValues = {
+    min: 10,
+    max: 50,
+    rangeValues: [10, 20, 30, 40, 50],
+  };
 
-    const rangeComponent = screen.queryByTestId("range-without-rangevalues");
-    expect(rangeComponent).toBeInTheDocument();
+  const mockDataWithoutRangeValues = {
+    min: 10,
+    max: 50,
+    rangeValues: [],
+  };
+
+  it("renders RangeWithRangeValues when rangeValues are present", () => {
+    const { getByTestId } = render(<Range data={mockDataWithRangeValues} />);
+    expect(getByTestId("range-with-rangevalues")).toBeInTheDocument();
+  });
+
+  it("renders RangeWithoutRangeValues when rangeValues are absent", () => {
+    const { getByTestId } = render(<Range data={mockDataWithoutRangeValues} />);
+    expect(getByTestId("range-without-rangevalues")).toBeInTheDocument();
   });
 });
