@@ -56,7 +56,7 @@ export default function ExercisesLayout({
         </Link>
         <h3>{title}</h3>
       </Header>
-      <main>{children}</main>
+      <main style={{ width: "600px" }}>{children}</main>
       <Footer className={styles.footer}>
         <FooterNavigationWrapper>
           <NavigationContainer>
