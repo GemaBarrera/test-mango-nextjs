@@ -65,10 +65,10 @@ describe("RangeWithoutRangeValues", () => {
   it("bullet for min value starts in the correct position and moves correctly", async () => {
     render(<RangeWithoutRangeValues min={0} max={100} />);
 
-    const minBullet = screen.getAllByTestId("bullet")[0];
+    const minBullet = screen.getAllByTestId("withoutrange-bullet")[0];
 
     // Calculate initial position spected
-    const track = screen.getByTestId("track");
+    const track = screen.getByTestId("withoutrange-track");
     const trackWidth = track.offsetWidth;
     const startPositionMin = (0 / 100) * trackWidth;
 
@@ -92,8 +92,8 @@ describe("RangeWithoutRangeValues", () => {
   it("bullet for max value starts in the correct position and moves correctly", async () => {
     render(<RangeWithoutRangeValues min={0} max={100} />);
 
-    const maxBullet = screen.getAllByTestId("bullet")[1];
-    const track = screen.getByTestId("track");
+    const maxBullet = screen.getAllByTestId("withoutrange-bullet")[1];
+    const track = screen.getByTestId("withoutrange-track");
     const trackWidth = track.offsetWidth;
 
     // Initial position should be 100% of track length

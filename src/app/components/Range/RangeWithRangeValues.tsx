@@ -85,10 +85,12 @@ const RangeWithRangeValues: React.FC<RangeWithRangeValues> = ({
             right={100 - calculatePosition(sortedValues[rightIndex])}
           />
           <Bullet
+            data-testid="withrange-bullet"
             position={calculatePosition(sortedValues[leftIndex])}
             onMouseDown={() => setupDragListeners(true)}
           />
           <Bullet
+            data-testid="withrange-bullet"
             position={calculatePosition(sortedValues[rightIndex])}
             onMouseDown={() => setupDragListeners(false)}
           />

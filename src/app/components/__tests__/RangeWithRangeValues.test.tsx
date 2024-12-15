@@ -1,4 +1,4 @@
-import { fireEvent, render } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { RangeWithRangeValues } from "../Range";
 
 describe("RangeWithRangeValues", () => {
@@ -47,5 +47,41 @@ describe("RangeWithRangeValues", () => {
       // Assert that the right bullet position is updated, assuming the right index moved
       expect(getByText("40")).toBeInTheDocument();
     }
+  });
+
+  it("bullets start in the correct position and move correctly", async () => {
+    const rangeValues = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+    render(<RangeWithRangeValues rangeValues={rangeValues} />);
+
+    const leftBullet = screen.getAllByTestId("withrange-bullet")[0];
+    const rightBullet = screen.getAllByTestId("withrange-bullet")[1];
+
+    // Verify initial position of the bullets
+    await waitFor(() =>
+      expect(leftBullet).toHaveStyle(`transform: translate(-50%,-50%)`)
+    );
+    await waitFor(() =>
+      expect(rightBullet).toHaveStyle(`transform: translate(-50%,-50%)`)
+    );
+
+    // Simulate left bullet movement
+    fireEvent.click(leftBullet);
+    fireEvent.pointerMove(leftBullet, { clientX: 150 });
+    fireEvent.pointerUp(leftBullet);
+
+    // Verify left bullet was moved to the right position
+    await waitFor(() =>
+      expect(leftBullet).toHaveStyle(`transform: translate(-50%,-50%)`)
+    );
+
+    // Simulate right bullet movement
+    fireEvent.click(rightBullet);
+    fireEvent.pointerMove(rightBullet, { clientX: 250 });
+    fireEvent.pointerUp(rightBullet);
+
+    // Verify right bullet was moved to the right position
+    await waitFor(() =>
+      expect(rightBullet).toHaveStyle(`transform: translate(-50%,-50%)`)
+    );
   });
 });
