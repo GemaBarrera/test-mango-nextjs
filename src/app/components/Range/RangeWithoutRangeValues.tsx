@@ -129,15 +129,17 @@ const RangeWithoutRangeValues: React.FC<RangeWithoutRangeValues> = ({
       />
       <Badge style={{ marginRight: "10px" }}>€</Badge>
       <RangeSelector>
-        <Track ref={trackRef} />
+        <Track data-testId="track" ref={trackRef} />
         <Highlight
           style={{ left: minPosition, width: maxPosition - minPosition }}
         />
         <Bullet
+          data-testId="bullet"
           style={{ left: minPosition }}
           onMouseDown={() => handleMouseDown("min")}
         />
         <Bullet
+          data-testId="bullet"
           style={{ left: maxPosition }}
           onMouseDown={() => handleMouseDown("max")}
         />

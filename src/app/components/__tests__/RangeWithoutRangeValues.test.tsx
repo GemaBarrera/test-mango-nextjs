@@ -1,4 +1,4 @@
-import { fireEvent, render } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { RangeWithoutRangeValues } from "../Range";
 
 describe("RangeWithoutRangeValues", () => {
@@ -60,5 +60,57 @@ describe("RangeWithoutRangeValues", () => {
     fireEvent.blur(maxInput);
     // Reset to previous valid value
     expect(getByDisplayValue("50.00")).toBeInTheDocument();
+  });
+
+  it("bullet for min value starts in the correct position and moves correctly", async () => {
+    render(<RangeWithoutRangeValues min={0} max={100} />);
+
+    const minBullet = screen.getAllByTestId("bullet")[0];
+
+    // Calculate initial position spected
+    const track = screen.getByTestId("track");
+    const trackWidth = track.offsetWidth;
+    const startPositionMin = (0 / 100) * trackWidth;
+
+    // Await bullet position to be updated
+    await waitFor(() =>
+      expect(minBullet).toHaveStyle(`left: ${startPositionMin}px`)
+    );
+
+    fireEvent.mouseDown(minBullet);
+    fireEvent.pointerMove(minBullet, { clientX: 50 });
+    fireEvent.pointerUp(minBullet);
+
+    // Verifiy bullet position has updated correctly
+    const updatedPositionMin = (50 / 100) * trackWidth;
+
+    await waitFor(() =>
+      expect(minBullet).toHaveStyle(`left: ${updatedPositionMin}px`)
+    );
+  });
+
+  it("bullet for max value starts in the correct position and moves correctly", async () => {
+    render(<RangeWithoutRangeValues min={0} max={100} />);
+
+    const maxBullet = screen.getAllByTestId("bullet")[1];
+    const track = screen.getByTestId("track");
+    const trackWidth = track.offsetWidth;
+
+    // Initial position should be 100% of track length
+    const startPositionMax = (100 / 100) * trackWidth;
+
+    await waitFor(() =>
+      expect(maxBullet).toHaveStyle(`left: ${startPositionMax}px`)
+    );
+
+    fireEvent.mouseDown(maxBullet);
+    fireEvent.pointerMove(maxBullet, { clientX: 50 });
+    fireEvent.pointerUp(maxBullet);
+
+    const updatedPositionMax = (50 / 100) * trackWidth;
+
+    await waitFor(() =>
+      expect(maxBullet).toHaveStyle(`left: ${updatedPositionMax}px`)
+    );
   });
 });
