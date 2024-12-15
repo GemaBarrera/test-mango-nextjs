@@ -173,7 +173,7 @@ const RangeWithoutRangeValues: React.FC<RangeWithoutRangeValues> = ({
         onBlur={() => handleInputBlur("min")}
         style={{ width: "60px" }}
       />
-      <Badge>€</Badge>
+      <Badge style={{ marginRight: "10px" }}>€</Badge>
       <RangeSelector>
         <Track ref={trackRef} />
         <Highlight
