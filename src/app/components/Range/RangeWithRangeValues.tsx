@@ -85,6 +85,7 @@ const RangeWithRangeValues: React.FC<RangeWithRangeValues> = ({
 
   const rangeBarRef = useRef<HTMLDivElement>(null);
 
+  // Update the index of left bullet and right bullet, ensuring they don't overlap.
   const handleLeftChange = (newIndex: number) => {
     if (newIndex >= 0 && newIndex < rightIndex) {
       setLeftIndex(newIndex);
@@ -97,9 +98,11 @@ const RangeWithRangeValues: React.FC<RangeWithRangeValues> = ({
     }
   };
 
+  // Calculate the position of a value within the range bar as a percentage.
   const calculatePosition = (value: number): number =>
     ((value - min) / (max - min)) * 100;
 
+  // Handle the drag operation when a bullet is moved.It determines the new index based on the mouse position and updates the corresponding bullet.
   const handleDrag = (event: MouseEvent, isLeftBullet: boolean) => {
     if (!rangeBarRef.current) return;
 
@@ -115,6 +118,7 @@ const RangeWithRangeValues: React.FC<RangeWithRangeValues> = ({
     }
   };
 
+  // Listen to `mousemove` events for updating the bullet's position and `mouseup` events to remove the listeners when dragging stops.
   const setupDragListeners = (isLeftBullet: boolean) => {
     const moveHandler = (event: MouseEvent) => handleDrag(event, isLeftBullet);
     const upHandler = () => {

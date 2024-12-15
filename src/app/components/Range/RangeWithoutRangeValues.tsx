@@ -90,6 +90,7 @@ const RangeWithoutRangeValues: React.FC<RangeWithoutRangeValues> = ({
   const [inputMinValue, setInputMinValue] = useState<string>(min.toFixed(2));
   const [inputMaxValue, setInputMaxValue] = useState<string>(max.toFixed(2));
 
+  // Update the 'min' and 'max' values based on the position of the mouse during a drag operation.
   const handleMove = (e: MouseEvent, type: "min" | "max") => {
     const track = trackRef.current;
     if (!track) return;
@@ -113,6 +114,7 @@ const RangeWithoutRangeValues: React.FC<RangeWithoutRangeValues> = ({
     }
   };
 
+  // Listens for 'mousemove' events to update the handle's position and 'mouseup' events to stop the dragging.
   const handleMouseDown = (type: "min" | "max") => {
     const handleMouseMove = (e: MouseEvent) => handleMove(e, type);
     const handleMouseUp = () => {
@@ -123,6 +125,7 @@ const RangeWithoutRangeValues: React.FC<RangeWithoutRangeValues> = ({
     window.addEventListener("mouseup", handleMouseUp);
   };
 
+  // Handle changes made in the input fields. Check that the input value is a valid number, and updates the state of 'min' or 'max'.
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     type: "min" | "max"
@@ -146,6 +149,7 @@ const RangeWithoutRangeValues: React.FC<RangeWithoutRangeValues> = ({
     }
   };
 
+  // Ensures that the 'min' and 'max' values are within valid ranges, and if not, reset the input value to the nearest valid value.
   const handleInputBlur = (type: "min" | "max") => {
     if (type === "min") {
       const value = parseFloat(inputMinValue);
