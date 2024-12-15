@@ -165,7 +165,7 @@ const RangeWithoutRangeValues: React.FC<RangeWithoutRangeValues> = ({
   const maxPosition = ((maxValue - min) / (max - min)) * trackWidth;
 
   return (
-    <RangeWrapper>
+    <RangeWrapper data-testid="range-without-rangevalues">
       <Input
         type="text"
         value={inputMinValue}
