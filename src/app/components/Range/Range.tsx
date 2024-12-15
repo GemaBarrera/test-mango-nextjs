@@ -9,7 +9,7 @@ type RangeProps = {
 const Range: React.FC<RangeProps> = ({ data }) => {
   const { min, max, rangeValues } = data;
 
-  if (rangeValues.length > 0) {
+  if (rangeValues && rangeValues.length > 0) {
     return <RangeWithRangeValues rangeValues={rangeValues} />;
   } else {
     return <RangeWithoutRangeValues min={min} max={max} />;

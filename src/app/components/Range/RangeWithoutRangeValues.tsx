@@ -12,13 +12,13 @@ import {
 } from "./RangeWithoutRangeValues.styles";
 
 interface RangeWithoutRangeValues {
-  min: number;
-  max: number;
+  min?: number;
+  max?: number;
 }
 
 const RangeWithoutRangeValues: React.FC<RangeWithoutRangeValues> = ({
-  min,
-  max,
+  min = 0,
+  max = 100,
 }) => {
   const trackRef = useRef<HTMLDivElement>(null);
   const [minValue, setMinValue] = useState<number>(min);

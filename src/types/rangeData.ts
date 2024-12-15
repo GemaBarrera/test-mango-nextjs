@@ -1,5 +1,5 @@
 export interface RangeData {
-    min: number;
-    max: number;
-    rangeValues: number[];
+    min?: number;
+    max?: number;
+    rangeValues?: number[];
   }
