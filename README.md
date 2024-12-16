@@ -47,7 +47,7 @@ yarn dev
 
 ## Deployment
 
-Check out the **[Deployment on Vercel](https://test-mango-nextjs.vercel.app/exercise2)** for this project.
+Check out the **[Deployment on Vercel](https://test-mango-nextjs.vercel.app)** for this project.
 
 ## Tests
 
