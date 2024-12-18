@@ -65,6 +65,40 @@ const RangeWithoutRangeValues: React.FC<RangeWithoutRangeValues> = ({
     }
   };
 
+  // Update the 'min' and 'max' values on touch the screen on touchable devices.
+  const handleTouchMove = (e: TouchEvent, type: "min" | "max") => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    const rect = track.getBoundingClientRect();
+    const touch = e.touches[0];
+    const offsetX = touch.clientX - rect.left;
+
+    const newValue = parseFloat(
+      ((offsetX / rect.width) * (max - min) + min).toFixed(2)
+    );
+
+    if (type === "min") {
+      const clampedMinValue = Math.max(newValue, min);
+      const clampedMinValueAdjusted = Math.min(clampedMinValue, maxValue);
+
+      if (clampedMinValueAdjusted === minValue) return;
+
+      setMinValue(clampedMinValueAdjusted);
+      setInputMinValue(clampedMinValueAdjusted.toFixed(2));
+    }
+
+    if (type === "max") {
+      const clampedMaxValue = Math.min(newValue, max);
+      const clampedMaxValueAdjusted = Math.max(clampedMaxValue, minValue);
+
+      if (clampedMaxValueAdjusted === maxValue) return;
+
+      setMaxValue(clampedMaxValueAdjusted);
+      setInputMaxValue(clampedMaxValueAdjusted.toFixed(2));
+    }
+  };
+
   // Listens for 'mousemove' events to update the handle's position and 'mouseup' events to stop the dragging.
   const handleMouseDown = (type: "min" | "max") => {
     const handleMouseMove = (e: MouseEvent) => handleMove(e, type);
@@ -118,6 +152,16 @@ const RangeWithoutRangeValues: React.FC<RangeWithoutRangeValues> = ({
   const minPosition = ((minValue - min) / (max - min)) * trackWidth;
   const maxPosition = ((maxValue - min) / (max - min)) * trackWidth;
 
+  const handleTouchStart = (type: "min" | "max") => {
+    const handleTouchMoveEvent = (e: TouchEvent) => handleTouchMove(e, type);
+    const handleTouchEnd = () => {
+      window.removeEventListener("touchmove", handleTouchMoveEvent);
+      window.removeEventListener("touchend", handleTouchEnd);
+    };
+    window.addEventListener("touchmove", handleTouchMoveEvent);
+    window.addEventListener("touchend", handleTouchEnd);
+  };
+
   return (
     <RangeWrapper data-testid="range-without-rangevalues">
       <Input
@@ -137,11 +181,13 @@ const RangeWithoutRangeValues: React.FC<RangeWithoutRangeValues> = ({
           data-testid="withoutrange-bullet"
           style={{ left: minPosition }}
           onMouseDown={() => handleMouseDown("min")}
+          onTouchStart={() => handleTouchStart("min")}
         />
         <Bullet
           data-testid="withoutrange-bullet"
           style={{ left: maxPosition }}
           onMouseDown={() => handleMouseDown("max")}
+          onTouchStart={() => handleTouchStart("max")}
         />
       </RangeSelector>
       <Input
