@@ -46,11 +46,11 @@ const RangeWithRangeValues: React.FC<RangeWithRangeValues> = ({
     ((value - min) / (max - min)) * 100;
 
   // Handle the drag operation when a bullet is moved.It determines the new index based on the mouse position and updates the corresponding bullet.
-  const handleDrag = (event: MouseEvent, isLeftBullet: boolean) => {
+  const handleDrag = (clientX: number, isLeftBullet: boolean) => {
     if (!rangeBarRef.current) return;
 
     const rect = rangeBarRef.current.getBoundingClientRect();
-    const offsetX = event.clientX - rect.left;
+    const offsetX = clientX - rect.left;
     const percentage = offsetX / rect.width;
     const newIndex = Math.round(percentage * (sortedValues.length - 1));
 
@@ -61,15 +61,25 @@ const RangeWithRangeValues: React.FC<RangeWithRangeValues> = ({
     }
   };
 
-  // Listen to `mousemove` events for updating the bullet's position and `mouseup` events to remove the listeners when dragging stops.
+  // Listen to `mousemove` and `touchmove` events for updating the bullet's position and `mouseup` and `touchend` events to remove the listeners when dragging stops.
   const setupDragListeners = (isLeftBullet: boolean) => {
-    const moveHandler = (event: MouseEvent) => handleDrag(event, isLeftBullet);
-    const upHandler = () => {
-      window.removeEventListener("mousemove", moveHandler);
-      window.removeEventListener("mouseup", upHandler);
+    const moveHandler = (event: MouseEvent | TouchEvent) => {
+      const clientX =
+        event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+      handleDrag(clientX, isLeftBullet);
     };
-    window.addEventListener("mousemove", moveHandler);
+
+    const upHandler = () => {
+      window.removeEventListener("mousemove", moveHandler as EventListener);
+      window.removeEventListener("mouseup", upHandler);
+      window.removeEventListener("touchmove", moveHandler as EventListener);
+      window.removeEventListener("touchend", upHandler);
+    };
+
+    window.addEventListener("mousemove", moveHandler as EventListener);
     window.addEventListener("mouseup", upHandler);
+    window.addEventListener("touchmove", moveHandler as EventListener);
+    window.addEventListener("touchend", upHandler);
   };
 
   return (
@@ -88,11 +98,13 @@ const RangeWithRangeValues: React.FC<RangeWithRangeValues> = ({
             data-testid="withrange-bullet"
             position={calculatePosition(sortedValues[leftIndex])}
             onMouseDown={() => setupDragListeners(true)}
+            onTouchStart={() => setupDragListeners(true)}
           />
           <Bullet
             data-testid="withrange-bullet"
             position={calculatePosition(sortedValues[rightIndex])}
             onMouseDown={() => setupDragListeners(false)}
+            onTouchStart={() => setupDragListeners(false)}
           />
         </RangeBar>
       </RangeContainer>
