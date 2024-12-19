@@ -69,4 +69,3 @@ Check out the **[Deployment on Vercel](https://test-mango-nextjs.vercel.app)** f
 - Styles could be more accurate, but I would need the fonts, sizes and margins from a dessign.
 - For a component like this, it's good to add tests e2e, for example with Cypress, to ensure the correct behavior with user interactions.
 - Accessibility improvements.
-- Responsiveness. I didn't adapt it for devices, so the view in mobile would not be adequate.
