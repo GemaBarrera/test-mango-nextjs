@@ -91,6 +91,7 @@ const RangeWithRangeValues: React.FC<RangeWithRangeValues> = ({
       <RangeContainer>
         <RangeBar ref={rangeBarRef}>
           <Track
+            data-testid="withrange-track"
             left={calculatePosition(sortedValues[leftIndex])}
             right={100 - calculatePosition(sortedValues[rightIndex])}
           />

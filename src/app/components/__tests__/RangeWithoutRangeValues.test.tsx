@@ -113,4 +113,38 @@ describe("RangeWithoutRangeValues", () => {
       expect(maxBullet).toHaveStyle(`left: ${updatedPositionMax}px`)
     );
   });
+
+  it("allows dragging bullets to update values", () => {
+    render(<RangeWithoutRangeValues min={0} max={100} />);
+
+    const bullets = screen.getAllByTestId("withoutrange-bullet");
+    const track = screen.getByTestId("withoutrange-track");
+    const minInput = screen.getAllByRole("textbox")[0];
+    const maxInput = screen.getAllByRole("textbox")[1];
+
+    // Mock the bounding box of the track for accurate calculations
+    jest.spyOn(track, "getBoundingClientRect").mockReturnValue({
+      left: 0,
+      width: 1000,
+      top: 0,
+      bottom: 0,
+      right: 0,
+      height: 0,
+      x: 0,
+      y: 0,
+      toJSON: () => {},
+    });
+
+    // Simulate dragging the left bullet
+    fireEvent.mouseDown(bullets[0]);
+    fireEvent.mouseMove(document, { clientX: 250 }); // Move to 25% of the track
+    fireEvent.mouseUp(document);
+    expect(minInput).toHaveValue("25.00");
+
+    // Simulate dragging the right bullet
+    fireEvent.mouseDown(bullets[1]);
+    fireEvent.mouseMove(document, { clientX: 750 }); // Move to 75% of the track
+    fireEvent.mouseUp(document);
+    expect(maxInput).toHaveValue("75.00");
+  });
 });
