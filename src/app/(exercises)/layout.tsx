@@ -2,33 +2,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import styled from "styled-components";
 import styles from "../page.module.css";
-
-const Header = styled.header`
-  display: flex;
-  justify-content: flex-start;
-  flex-direction: column;
-  width: 100%;
-`;
-
-const Footer = styled.footer`
-  width: 100%;
-`;
-
-const FooterNavigationWrapper = styled.div`
-  display: flex;
-  width: 100%;
-`;
-
-const NavigationContainer = styled.div`
-  display: flex;
-  width: 50%;
-  justify-content: center;
-  align-items: center;
-  color: #757575;
-  font-weight: bold;
-`;
+import {
+  Footer,
+  FooterNavigationWrapper,
+  Header,
+  NavigationContainer,
+} from "./layout.styles";
 
 export default function ExercisesLayout({
   children,
@@ -56,7 +36,7 @@ export default function ExercisesLayout({
         </Link>
         <h3>{title}</h3>
       </Header>
-      <main style={{ width: "600px" }}>{children}</main>
+      <main>{children}</main>
       <Footer className={styles.footer}>
         <FooterNavigationWrapper>
           <NavigationContainer>

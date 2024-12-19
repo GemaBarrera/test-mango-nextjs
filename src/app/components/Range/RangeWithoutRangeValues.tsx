@@ -28,18 +28,27 @@ const RangeWithoutRangeValues: React.FC<RangeWithoutRangeValues> = ({
   const [trackWidth, setTrackWidth] = useState<number>(1);
 
   useEffect(() => {
-    if (trackRef.current) {
-      setTrackWidth(trackRef.current.offsetWidth);
-    }
+    const updateTrackWidth = () => {
+      if (trackRef.current) {
+        setTrackWidth(trackRef.current.offsetWidth);
+      }
+    };
+
+    updateTrackWidth();
+    window.addEventListener("resize", updateTrackWidth);
+
+    return () => {
+      window.removeEventListener("resize", updateTrackWidth);
+    };
   }, []);
 
-  // Update the 'min' and 'max' values based on the position of the mouse during a drag operation.
-  const handleMove = (e: MouseEvent, type: "min" | "max") => {
+  // Update the 'min' and 'max' values based on the position of the mouse or touch during a drag operation.
+  const handleMove = (clientX: number, type: "min" | "max") => {
     const track = trackRef.current;
     if (!track) return;
 
     const rect = track.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
+    const offsetX = clientX - rect.left;
     const newValue = parseFloat(
       ((offsetX / rect.width) * (max - min) + min).toFixed(2)
     );
@@ -65,52 +74,32 @@ const RangeWithoutRangeValues: React.FC<RangeWithoutRangeValues> = ({
     }
   };
 
-  // Update the 'min' and 'max' values on touch the screen on touchable devices.
-  const handleTouchMove = (e: TouchEvent, type: "min" | "max") => {
-    const track = trackRef.current;
-    if (!track) return;
-
-    const rect = track.getBoundingClientRect();
-    const touch = e.touches[0];
-    const offsetX = touch.clientX - rect.left;
-
-    const newValue = parseFloat(
-      ((offsetX / rect.width) * (max - min) + min).toFixed(2)
-    );
-
-    if (type === "min") {
-      const clampedMinValue = Math.max(newValue, min);
-      const clampedMinValueAdjusted = Math.min(clampedMinValue, maxValue);
-
-      if (clampedMinValueAdjusted === minValue) return;
-
-      setMinValue(clampedMinValueAdjusted);
-      setInputMinValue(clampedMinValueAdjusted.toFixed(2));
-    }
-
-    if (type === "max") {
-      const clampedMaxValue = Math.min(newValue, max);
-      const clampedMaxValueAdjusted = Math.max(clampedMaxValue, minValue);
-
-      if (clampedMaxValueAdjusted === maxValue) return;
-
-      setMaxValue(clampedMaxValueAdjusted);
-      setInputMaxValue(clampedMaxValueAdjusted.toFixed(2));
-    }
-  };
-
-  // Listens for 'mousemove' events to update the handle's position and 'mouseup' events to stop the dragging.
+  // Listens for drag events and updates the handle's position.
   const handleMouseDown = (type: "min" | "max") => {
-    const handleMouseMove = (e: MouseEvent) => handleMove(e, type);
-    const handleMouseUp = () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
+    const moveHandler = (e: MouseEvent) => handleMove(e.clientX, type);
+    const upHandler = () => {
+      window.removeEventListener("mousemove", moveHandler);
+      window.removeEventListener("mouseup", upHandler);
     };
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("mousemove", moveHandler);
+    window.addEventListener("mouseup", upHandler);
   };
 
-  // Handle changes made in the input fields. Check that the input value is a valid number, and updates the state of 'min' or 'max'.
+  // Listens for touch events and updates the handle's position.
+  const handleTouchStart = (type: "min" | "max") => {
+    const moveHandler = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        handleMove(e.touches[0].clientX, type);
+      }
+    };
+    const endHandler = () => {
+      window.removeEventListener("touchmove", moveHandler);
+      window.removeEventListener("touchend", endHandler);
+    };
+    window.addEventListener("touchmove", moveHandler);
+    window.addEventListener("touchend", endHandler);
+  };
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     type: "min" | "max"
@@ -134,7 +123,6 @@ const RangeWithoutRangeValues: React.FC<RangeWithoutRangeValues> = ({
     }
   };
 
-  // Ensures that the 'min' and 'max' values are within valid ranges, and if not, reset the input value to the nearest valid value.
   const handleInputBlur = (type: "min" | "max") => {
     if (type === "min") {
       const value = parseFloat(inputMinValue);
@@ -152,16 +140,6 @@ const RangeWithoutRangeValues: React.FC<RangeWithoutRangeValues> = ({
   const minPosition = ((minValue - min) / (max - min)) * trackWidth;
   const maxPosition = ((maxValue - min) / (max - min)) * trackWidth;
 
-  const handleTouchStart = (type: "min" | "max") => {
-    const handleTouchMoveEvent = (e: TouchEvent) => handleTouchMove(e, type);
-    const handleTouchEnd = () => {
-      window.removeEventListener("touchmove", handleTouchMoveEvent);
-      window.removeEventListener("touchend", handleTouchEnd);
-    };
-    window.addEventListener("touchmove", handleTouchMoveEvent);
-    window.addEventListener("touchend", handleTouchEnd);
-  };
-
   return (
     <RangeWrapper data-testid="range-without-rangevalues">
       <Input
@@ -169,23 +147,26 @@ const RangeWithoutRangeValues: React.FC<RangeWithoutRangeValues> = ({
         value={inputMinValue}
         onChange={(e) => handleInputChange(e, "min")}
         onBlur={() => handleInputBlur("min")}
-        style={{ width: "60px" }}
+        style={{ width: "10vw" }}
       />
       <Badge style={{ marginRight: "10px" }}>€</Badge>
       <RangeSelector>
         <Track data-testid="withoutrange-track" ref={trackRef} />
         <Highlight
-          style={{ left: minPosition, width: maxPosition - minPosition }}
+          style={{
+            left: `${minPosition}px`,
+            width: `${maxPosition - minPosition}px`,
+          }}
         />
         <Bullet
           data-testid="withoutrange-bullet"
-          style={{ left: minPosition }}
+          style={{ left: `${minPosition}px` }}
           onMouseDown={() => handleMouseDown("min")}
           onTouchStart={() => handleTouchStart("min")}
         />
         <Bullet
           data-testid="withoutrange-bullet"
-          style={{ left: maxPosition }}
+          style={{ left: `${maxPosition}px` }}
           onMouseDown={() => handleMouseDown("max")}
           onTouchStart={() => handleTouchStart("max")}
         />
@@ -195,6 +176,7 @@ const RangeWithoutRangeValues: React.FC<RangeWithoutRangeValues> = ({
         value={inputMaxValue}
         onChange={(e) => handleInputChange(e, "max")}
         onBlur={() => handleInputBlur("max")}
+        style={{ width: "10vw" }}
       />
       <Badge>€</Badge>
     </RangeWrapper>

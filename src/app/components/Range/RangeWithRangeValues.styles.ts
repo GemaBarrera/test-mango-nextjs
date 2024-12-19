@@ -3,6 +3,7 @@ import styled from "styled-components";
 export const RangeWrapper = styled.div`
   display: flex;
   width: 600px;
+  max-width: 80vw;
 `;
 
 export const RangeContainer = styled.div`
@@ -24,6 +25,7 @@ export const Badge = styled.span`
   align-items: center;
   font-weight: 300;
   font-size: 0.8rem;
+  margin: 10px;
 `;
 
 export const RangeBar = styled.div`
